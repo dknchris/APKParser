@@ -26,7 +26,7 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.jaredrummler.apkparser">
+<manifest
+        package="com.jaredrummler.apkparser">
 
 </manifest>

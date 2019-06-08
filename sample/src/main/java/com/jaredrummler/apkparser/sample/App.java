@@ -18,16 +18,16 @@
 package com.jaredrummler.apkparser.sample;
 
 import android.app.Application;
-
 import com.jaredrummler.apkparser.sample.picasso.AppIconRequestHandler;
 import com.squareup.picasso.Picasso;
 
 public class App extends Application {
 
-  @Override public void onCreate() {
-    super.onCreate();
-    Picasso.setSingletonInstance(new Picasso.Builder(this)
-        .addRequestHandler(new AppIconRequestHandler(this))
-        .build());
-  }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Picasso.setSingletonInstance(new Picasso.Builder(this)
+                .addRequestHandler(new AppIconRequestHandler(this))
+                .build());
+    }
 }

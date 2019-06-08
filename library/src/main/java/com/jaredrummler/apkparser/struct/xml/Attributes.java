@@ -30,46 +30,46 @@ package com.jaredrummler.apkparser.struct.xml;
 
 public class Attributes {
 
-  private final Attribute[] attributes;
+    private final Attribute[] attributes;
 
-  public Attributes(int size) {
-    this.attributes = new Attribute[size];
-  }
-
-  public void set(int i, Attribute attribute) {
-    attributes[i] = attribute;
-  }
-
-  public String get(String name) {
-    for (Attribute attribute : attributes) {
-      if (attribute.getName().equals(name)) {
-        return attribute.getValue();
-      }
+    public Attributes(int size) {
+        this.attributes = new Attribute[size];
     }
-    return null;
-  }
 
-  public int size() {
-    return attributes.length;
-  }
+    public void set(int i, Attribute attribute) {
+        attributes[i] = attribute;
+    }
 
-  public boolean getBoolean(String name, boolean b) {
-    String value = get(name);
-    return value == null ? b : Boolean.parseBoolean(value);
-  }
+    public String get(String name) {
+        for (Attribute attribute : attributes) {
+            if (attribute.getName().equals(name)) {
+                return attribute.getValue();
+            }
+        }
+        return null;
+    }
 
-  public Integer getInt(String name) {
-    String value = get(name);
-    return value == null ? null : Integer.valueOf(value);
-  }
+    public int size() {
+        return attributes.length;
+    }
 
-  public Long getLong(String name) {
-    String value = get(name);
-    return value == null ? null : Long.valueOf(value);
-  }
+    public boolean getBoolean(String name, boolean b) {
+        String value = get(name);
+        return value == null ? b : Boolean.parseBoolean(value);
+    }
 
-  public Attribute[] value() {
-    return this.attributes;
-  }
+    public Integer getInt(String name) {
+        String value = get(name);
+        return value == null ? null : Integer.valueOf(value);
+    }
+
+    public Long getLong(String name) {
+        String value = get(name);
+        return value == null ? null : Long.valueOf(value);
+    }
+
+    public Attribute[] value() {
+        return this.attributes;
+    }
 }
 

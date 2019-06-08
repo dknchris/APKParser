@@ -27,30 +27,30 @@ import java.util.zip.ZipFile;
 
 public class Helper {
 
-  public static String[] getXmlFiles(String path) {
-    List<String> xmlFiles = new ArrayList<>();
-    ZipFile zipFile = null;
-    try {
-      zipFile = new ZipFile(path);
-      Enumeration<? extends ZipEntry> entries = zipFile.entries();
-      while (entries.hasMoreElements()) {
-        ZipEntry entry = entries.nextElement();
-        String name = entry.getName();
-        if (name.endsWith(".xml") && !name.equals("AndroidManifest.xml")) {
-          xmlFiles.add(name);
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      if (zipFile != null) {
+    public static String[] getXmlFiles(String path) {
+        List<String> xmlFiles = new ArrayList<>();
+        ZipFile zipFile = null;
         try {
-          zipFile.close();
-        } catch (IOException ignored) {
+            zipFile = new ZipFile(path);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                String name = entry.getName();
+                if (name.endsWith(".xml") && !name.equals("AndroidManifest.xml")) {
+                    xmlFiles.add(name);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (zipFile != null) {
+                try {
+                    zipFile.close();
+                } catch (IOException ignored) {
+                }
+            }
         }
-      }
+        Collections.sort(xmlFiles);
+        return xmlFiles.toArray(new String[xmlFiles.size()]);
     }
-    Collections.sort(xmlFiles);
-    return xmlFiles.toArray(new String[xmlFiles.size()]);
-  }
 }

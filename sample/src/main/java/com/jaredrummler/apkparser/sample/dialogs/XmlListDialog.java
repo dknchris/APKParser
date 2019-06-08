@@ -24,41 +24,43 @@ import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-
 import com.jaredrummler.apkparser.sample.interfaces.ApkParserSample;
 import com.jaredrummler.apkparser.sample.util.AppNames;
 
 public class XmlListDialog extends DialogFragment {
 
-  public static void show(Activity activity, PackageInfo app, String[] items) {
-    XmlListDialog dialog = new XmlListDialog();
-    Bundle args = new Bundle();
-    args.putParcelable("app", app);
-    args.putStringArray("items", items);
-    dialog.setArguments(args);
-    dialog.show(activity.getFragmentManager(), "XmlListDialog");
-  }
+    public static void show(Activity activity, PackageInfo app, String[] items) {
+        XmlListDialog dialog = new XmlListDialog();
+        Bundle args = new Bundle();
+        args.putParcelable("app", app);
+        args.putStringArray("items", items);
+        dialog.setArguments(args);
+        dialog.show(activity.getFragmentManager(), "XmlListDialog");
+    }
 
-  @Override public Dialog onCreateDialog(Bundle savedInstanceState) {
-    final PackageInfo app = getArguments().getParcelable("app");
-    final String[] items = getArguments().getStringArray("items");
-    return new AlertDialog.Builder(getActivity())
-        .setTitle(AppNames.getLabel(getActivity().getPackageManager(), app))
-        .setItems(items, new DialogInterface.OnClickListener() {
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        final PackageInfo app = getArguments().getParcelable("app");
+        final String[] items = getArguments().getStringArray("items");
+        return new AlertDialog.Builder(getActivity())
+                .setTitle(AppNames.getLabel(getActivity().getPackageManager(), app))
+                .setItems(items, new DialogInterface.OnClickListener() {
 
-          @Override public void onClick(DialogInterface dialog, int which) {
-            if (getActivity() instanceof ApkParserSample) {
-              ApkParserSample callback = (ApkParserSample) getActivity();
-              callback.openXmlFile(app, items[which]);
-            }
-          }
-        })
-        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (getActivity() instanceof ApkParserSample) {
+                            ApkParserSample callback = (ApkParserSample) getActivity();
+                            callback.openXmlFile(app, items[which]);
+                        }
+                    }
+                })
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
-          @Override public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
-          }
-        })
-        .create();
-  }
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+    }
 }

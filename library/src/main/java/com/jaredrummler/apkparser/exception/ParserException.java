@@ -32,11 +32,11 @@ import java.io.IOException;
 
 public class ParserException extends IOException {
 
-  public ParserException(String msg) {
-    super(msg);
-  }
+    public ParserException(String msg) {
+        super(msg);
+    }
 
-  public ParserException(String detailMessage, Throwable throwable) {
-    super(detailMessage, throwable);
-  }
+    public ParserException(String detailMessage, Throwable throwable) {
+        super(detailMessage, throwable);
+    }
 }

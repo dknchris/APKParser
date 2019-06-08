@@ -30,30 +30,30 @@ package com.jaredrummler.apkparser.utils;
 
 public class Pair<K, V> {
 
-  private K left;
-  private V right;
+    private K left;
+    private V right;
 
-  public Pair() {
-  }
+    public Pair() {
+    }
 
-  public Pair(K left, V right) {
-    this.left = left;
-    this.right = right;
-  }
+    public Pair(K left, V right) {
+        this.left = left;
+        this.right = right;
+    }
 
-  public K getLeft() {
-    return left;
-  }
+    public K getLeft() {
+        return left;
+    }
 
-  public void setLeft(K left) {
-    this.left = left;
-  }
+    public void setLeft(K left) {
+        this.left = left;
+    }
 
-  public V getRight() {
-    return right;
-  }
+    public V getRight() {
+        return right;
+    }
 
-  public void setRight(V right) {
-    this.right = right;
-  }
+    public void setRight(V right) {
+        this.right = right;
+    }
 }

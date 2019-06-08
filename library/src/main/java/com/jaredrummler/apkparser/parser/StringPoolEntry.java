@@ -30,12 +30,12 @@ package com.jaredrummler.apkparser.parser;
 
 public class StringPoolEntry {
 
-  public final int index;
-  public final long offset;
+    public final int index;
+    public final long offset;
 
-  public StringPoolEntry(int index, long offset) {
-    this.index = index;
-    this.offset = offset;
-  }
+    public StringPoolEntry(int index, long offset) {
+        this.index = index;
+        this.offset = offset;
+    }
 
 }

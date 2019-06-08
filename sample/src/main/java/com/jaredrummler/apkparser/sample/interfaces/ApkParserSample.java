@@ -21,10 +21,10 @@ import android.content.pm.PackageInfo;
 
 public interface ApkParserSample {
 
-  void openXmlFile(PackageInfo app, String xml);
+    void openXmlFile(PackageInfo app, String xml);
 
-  void listXmlFiles(PackageInfo app);
+    void listXmlFiles(PackageInfo app);
 
-  void showMethodCount(PackageInfo app);
+    void showMethodCount(PackageInfo app);
 
 }

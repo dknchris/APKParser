@@ -32,24 +32,24 @@ import java.util.Locale;
 
 public class Locales {
 
-  public static final Locale ANY_LOCALE = new Locale("", "");
+    public static final Locale ANY_LOCALE = new Locale("", "");
 
-  public static int match(Locale locale, Locale targetLocale) {
-    if (locale == null) {
-      return -1;
+    public static int match(Locale locale, Locale targetLocale) {
+        if (locale == null) {
+            return -1;
+        }
+        if (locale.getLanguage().equals(targetLocale.getLanguage())) {
+            if (locale.getCountry().equals(targetLocale.getCountry())) {
+                return 3;
+            } else if (targetLocale.getCountry().isEmpty()) {
+                return 2;
+            } else {
+                return 0;
+            }
+        } else if (targetLocale.getCountry().isEmpty() || targetLocale.getLanguage().isEmpty()) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
-    if (locale.getLanguage().equals(targetLocale.getLanguage())) {
-      if (locale.getCountry().equals(targetLocale.getCountry())) {
-        return 3;
-      } else if (targetLocale.getCountry().isEmpty()) {
-        return 2;
-      } else {
-        return 0;
-      }
-    } else if (targetLocale.getCountry().isEmpty() || targetLocale.getLanguage().isEmpty()) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
 }

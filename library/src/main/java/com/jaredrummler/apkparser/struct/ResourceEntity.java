@@ -35,55 +35,56 @@ import java.util.Locale;
 
 /**
  * One entity. May be one entry in resource table, or string value
- *
+ * <p>
  * An APK only has one resource table
  */
 public class ResourceEntity {
 
-  private long resourceId;
-  private String value;
+    private long resourceId;
+    private String value;
 
-  public ResourceEntity(int i) {
-    value = String.valueOf(i);
-  }
-
-  public ResourceEntity(String s) {
-    value = s;
-  }
-
-  public ResourceEntity(boolean b) {
-    value = String.valueOf(b);
-  }
-
-  public ResourceEntity(long resourceId) {
-    this.resourceId = resourceId;
-  }
-
-  public long getResourceId() {
-    return resourceId;
-  }
-
-  public void setResourceId(long resourceId) {
-    this.resourceId = resourceId;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  public String toStringValue(ResourceTable resourceTable, Locale locale) {
-    if (value == null) {
-      value = ParseUtils.getResourceById(resourceId, resourceTable, locale);
+    public ResourceEntity(int i) {
+        value = String.valueOf(i);
     }
-    return value;
-  }
 
-  @Override public String toString() {
-    return "ResourceEntity{" + "resourceId=" + resourceId + ", value='" + value + '\'' + '}';
-  }
+    public ResourceEntity(String s) {
+        value = s;
+    }
+
+    public ResourceEntity(boolean b) {
+        value = String.valueOf(b);
+    }
+
+    public ResourceEntity(long resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    public long getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(long resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String toStringValue(ResourceTable resourceTable, Locale locale) {
+        if (value == null) {
+            value = ParseUtils.getResourceById(resourceId, resourceTable, locale);
+        }
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return "ResourceEntity{" + "resourceId=" + resourceId + ", value='" + value + '\'' + '}';
+    }
 
 }

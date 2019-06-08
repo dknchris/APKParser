@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
-
 import com.jaredrummler.apkparser.sample.adapters.AppListAdapter;
 import com.jaredrummler.apkparser.sample.dialogs.AppDialog;
 import com.jaredrummler.apkparser.sample.util.AppNames;
@@ -37,56 +36,62 @@ import java.util.List;
 
 public class AppListFragment extends ListFragment implements AdapterView.OnItemClickListener {
 
-  private final ArrayList<PackageInfo> installedPackages = new ArrayList<>();
-  private Parcelable listState;
+    private final ArrayList<PackageInfo> installedPackages = new ArrayList<>();
+    private Parcelable listState;
 
-  @Override public void onViewCreated(View view, Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-    if (savedInstanceState != null) {
-      ArrayList<PackageInfo> packages = savedInstanceState.getParcelableArrayList("packages");
-      if (packages != null && !packages.isEmpty()) {
-        installedPackages.addAll(packages);
-      }
-      listState = savedInstanceState.getParcelable("state");
-    }
-    new AppLoader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    getListView().setOnItemClickListener(this);
-  }
-
-  @Override public void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-    outState.putParcelableArrayList("packages", installedPackages);
-    outState.putParcelable("state", getListView().onSaveInstanceState());
-  }
-
-  @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    AppDialog.show(getActivity(), installedPackages.get(position));
-  }
-
-  private final class AppLoader extends AsyncTask<Void, Void, List<PackageInfo>> {
-
-    @Override protected List<PackageInfo> doInBackground(Void... params) {
-      if (installedPackages.isEmpty()) {
-        final PackageManager pm = getActivity().getPackageManager();
-        installedPackages.addAll(pm.getInstalledPackages(0));
-        Collections.sort(installedPackages, new Comparator<PackageInfo>() {
-
-          @Override public int compare(PackageInfo lhs, PackageInfo rhs) {
-            return AppNames.getLabel(pm, lhs).compareToIgnoreCase(AppNames.getLabel(pm, rhs));
-          }
-        });
-      }
-      return installedPackages;
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            ArrayList<PackageInfo> packages = savedInstanceState.getParcelableArrayList("packages");
+            if (packages != null && !packages.isEmpty()) {
+                installedPackages.addAll(packages);
+            }
+            listState = savedInstanceState.getParcelable("state");
+        }
+        new AppLoader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        getListView().setOnItemClickListener(this);
     }
 
-    @Override protected void onPostExecute(List<PackageInfo> apps) {
-      setListAdapter(new AppListAdapter(getActivity(), apps));
-      getListView().setFastScrollEnabled(true);
-      if (listState != null) {
-        getListView().onRestoreInstanceState(listState);
-        listState = null;
-      }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("packages", installedPackages);
+        outState.putParcelable("state", getListView().onSaveInstanceState());
     }
-  }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        AppDialog.show(getActivity(), installedPackages.get(position));
+    }
+
+    private final class AppLoader extends AsyncTask<Void, Void, List<PackageInfo>> {
+
+        @Override
+        protected List<PackageInfo> doInBackground(Void... params) {
+            if (installedPackages.isEmpty()) {
+                final PackageManager pm = getActivity().getPackageManager();
+                installedPackages.addAll(pm.getInstalledPackages(0));
+                Collections.sort(installedPackages, new Comparator<PackageInfo>() {
+
+                    @Override
+                    public int compare(PackageInfo lhs, PackageInfo rhs) {
+                        return AppNames.getLabel(pm, lhs).compareToIgnoreCase(AppNames.getLabel(pm, rhs));
+                    }
+                });
+            }
+            return installedPackages;
+        }
+
+        @Override
+        protected void onPostExecute(List<PackageInfo> apps) {
+            setListAdapter(new AppListAdapter(getActivity(), apps));
+            getListView().setFastScrollEnabled(true);
+            if (listState != null) {
+                getListView().onRestoreInstanceState(listState);
+                listState = null;
+            }
+        }
+    }
 
 }

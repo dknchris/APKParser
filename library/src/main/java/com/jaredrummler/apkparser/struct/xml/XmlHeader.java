@@ -32,7 +32,7 @@ import com.jaredrummler.apkparser.struct.ChunkHeader;
 
 public class XmlHeader extends ChunkHeader {
 
-  public XmlHeader(int chunkType, int headerSize, long chunkSize) {
-    super(chunkType, headerSize, chunkSize);
-  }
+    public XmlHeader(int chunkType, int headerSize, long chunkSize) {
+        super(chunkType, headerSize, chunkSize);
+    }
 }

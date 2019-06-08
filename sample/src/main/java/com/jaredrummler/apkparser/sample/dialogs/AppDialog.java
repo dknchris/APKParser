@@ -24,55 +24,57 @@ import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-
 import com.jaredrummler.apkparser.sample.interfaces.ApkParserSample;
 import com.jaredrummler.apkparser.sample.util.AppNames;
 
 public class AppDialog extends DialogFragment {
 
-  public static void show(Activity activity, PackageInfo app) {
-    AppDialog dialog = new AppDialog();
-    Bundle args = new Bundle();
-    args.putParcelable("app", app);
-    dialog.setArguments(args);
-    dialog.show(activity.getFragmentManager(), "AppDialog");
-  }
+    public static void show(Activity activity, PackageInfo app) {
+        AppDialog dialog = new AppDialog();
+        Bundle args = new Bundle();
+        args.putParcelable("app", app);
+        dialog.setArguments(args);
+        dialog.show(activity.getFragmentManager(), "AppDialog");
+    }
 
-  @Override public Dialog onCreateDialog(Bundle savedInstanceState) {
-    final PackageInfo app = getArguments().getParcelable("app");
-    final String[] items = {
-        "AndroidManifest.xml",
-        "Get XML files",
-        "Get method count"
-    };
-    return new AlertDialog.Builder(getActivity())
-        .setTitle(AppNames.getLabel(getActivity().getPackageManager(), app))
-        .setItems(items, new DialogInterface.OnClickListener() {
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        final PackageInfo app = getArguments().getParcelable("app");
+        final String[] items = {
+                "AndroidManifest.xml",
+                "Get XML files",
+                "Get method count"
+        };
+        return new AlertDialog.Builder(getActivity())
+                .setTitle(AppNames.getLabel(getActivity().getPackageManager(), app))
+                .setItems(items, new DialogInterface.OnClickListener() {
 
-          @Override public void onClick(DialogInterface dialog, int which) {
-            if (getActivity() instanceof ApkParserSample) {
-              ApkParserSample callback = (ApkParserSample) getActivity();
-              switch (which) {
-                case 0:
-                  callback.openXmlFile(app, "AndroidManifest.xml");
-                  break;
-                case 1:
-                  callback.listXmlFiles(app);
-                  break;
-                case 2:
-                  callback.showMethodCount(app);
-                  break;
-              }
-            }
-          }
-        })
-        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (getActivity() instanceof ApkParserSample) {
+                            ApkParserSample callback = (ApkParserSample) getActivity();
+                            switch (which) {
+                                case 0:
+                                    callback.openXmlFile(app, "AndroidManifest.xml");
+                                    break;
+                                case 1:
+                                    callback.listXmlFiles(app);
+                                    break;
+                                case 2:
+                                    callback.showMethodCount(app);
+                                    break;
+                            }
+                        }
+                    }
+                })
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
-          @Override public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
-          }
-        })
-        .create();
-  }
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+    }
 
 }

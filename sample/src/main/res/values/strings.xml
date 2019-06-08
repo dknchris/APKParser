@@ -16,5 +16,5 @@
   -->
 
 <resources>
-  <string name="app_name">APK Parser Sample</string>
+    <string name="app_name">APK Parser Sample</string>
 </resources>

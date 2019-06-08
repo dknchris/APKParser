@@ -30,43 +30,44 @@ package com.jaredrummler.apkparser.struct.xml;
 
 public class XmlNodeStartTag {
 
-  private String namespace;
-  private String name;
-  private Attributes attributes;
+    private String namespace;
+    private String name;
+    private Attributes attributes;
 
-  public String getNamespace() {
-    return namespace;
-  }
-
-  public void setNamespace(String namespace) {
-    this.namespace = namespace;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public Attributes getAttributes() {
-    return attributes;
-  }
-
-  public void setAttributes(Attributes attributes) {
-    this.attributes = attributes;
-  }
-
-  @Override public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append('<');
-    if (namespace != null) {
-      sb.append(namespace).append(":");
+    public String getNamespace() {
+        return namespace;
     }
-    sb.append(name);
-    sb.append('>');
-    return sb.toString();
-  }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Attributes getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Attributes attributes) {
+        this.attributes = attributes;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('<');
+        if (namespace != null) {
+            sb.append(namespace).append(":");
+        }
+        sb.append(name);
+        sb.append('>');
+        return sb.toString();
+    }
 
 }

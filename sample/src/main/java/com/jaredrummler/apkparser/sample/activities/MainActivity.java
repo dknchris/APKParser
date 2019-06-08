@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
-
 import com.jaredrummler.apkparser.ApkParser;
 import com.jaredrummler.apkparser.model.DexInfo;
 import com.jaredrummler.apkparser.sample.dialogs.XmlListDialog;
@@ -39,75 +38,83 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ApkParserSample {
 
-  @Override protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    if (savedInstanceState == null) {
-      getFragmentManager()
-          .beginTransaction()
-          .add(android.R.id.content, new AppListFragment())
-          .commit();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .add(android.R.id.content, new AppListFragment())
+                    .commit();
+        }
     }
-  }
 
-  @Override public void openXmlFile(PackageInfo app, String xml) {
-    Intent intent = new Intent(this, XmlSourceViewerActivity.class);
-    intent.putExtra("app", app);
-    intent.putExtra("xml", xml);
-    startActivity(intent);
-  }
-
-  @Override public void listXmlFiles(final PackageInfo app) {
-    final ProgressDialog pd = new ProgressDialog(this);
-    pd.setMessage("Please wait...");
-    pd.show();
-
-    new AsyncTask<Void, Void, String[]>() {
-
-      @Override protected String[] doInBackground(Void... params) {
-        return Helper.getXmlFiles(app.applicationInfo.sourceDir);
-      }
-
-      @Override protected void onPostExecute(String[] items) {
-        pd.dismiss();
-        if (!isFinishing()) {
-          XmlListDialog.show(MainActivity.this, app, items);
-        }
-      }
-    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-  }
-
-  @Override public void showMethodCount(final PackageInfo app) {
-    new Thread(new Runnable() {
-
-      @Override public void run() {
-        ApkParser parser = ApkParser.create(app);
-        try {
-          List<DexInfo> dexInfos = parser.getDexInfos();
-          int methodCount = 0;
-          for (DexInfo dexInfo : dexInfos) {
-            methodCount += dexInfo.header.methodIdsSize;
-          }
-          String message = NumberFormat.getNumberInstance().format(methodCount);
-          toast(message, Toast.LENGTH_SHORT);
-        } catch (IOException e) {
-          toast(e.getMessage(), Toast.LENGTH_LONG);
-        } finally {
-          parser.close();
-        }
-      }
-    }).start();
-  }
-
-  private void toast(final String message, final int length) {
-    if (Looper.myLooper() == Looper.getMainLooper()) {
-      Toast.makeText(getApplicationContext(), message, length).show();
-    } else {
-      runOnUiThread(new Runnable() {
-
-        @Override public void run() {
-          Toast.makeText(getApplicationContext(), message, length).show();
-        }
-      });
+    @Override
+    public void openXmlFile(PackageInfo app, String xml) {
+        Intent intent = new Intent(this, XmlSourceViewerActivity.class);
+        intent.putExtra("app", app);
+        intent.putExtra("xml", xml);
+        startActivity(intent);
     }
-  }
+
+    @Override
+    public void listXmlFiles(final PackageInfo app) {
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setMessage("Please wait...");
+        pd.show();
+
+        new AsyncTask<Void, Void, String[]>() {
+
+            @Override
+            protected String[] doInBackground(Void... params) {
+                return Helper.getXmlFiles(app.applicationInfo.sourceDir);
+            }
+
+            @Override
+            protected void onPostExecute(String[] items) {
+                pd.dismiss();
+                if (!isFinishing()) {
+                    XmlListDialog.show(MainActivity.this, app, items);
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    @Override
+    public void showMethodCount(final PackageInfo app) {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                ApkParser parser = ApkParser.create(app);
+                try {
+                    List<DexInfo> dexInfos = parser.getDexInfos();
+                    int methodCount = 0;
+                    for (DexInfo dexInfo : dexInfos) {
+                        methodCount += dexInfo.header.methodIdsSize;
+                    }
+                    String message = NumberFormat.getNumberInstance().format(methodCount);
+                    toast(message, Toast.LENGTH_SHORT);
+                } catch (IOException e) {
+                    toast(e.getMessage(), Toast.LENGTH_LONG);
+                } finally {
+                    parser.close();
+                }
+            }
+        }).start();
+    }
+
+    private void toast(final String message, final int length) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            Toast.makeText(getApplicationContext(), message, length).show();
+        } else {
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), message, length).show();
+                }
+            });
+        }
+    }
 }

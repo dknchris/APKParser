@@ -33,16 +33,17 @@ package com.jaredrummler.apkparser.model;
  */
 public class Icon {
 
-  public final String path;
-  public final byte[] data;
+    public final String path;
+    public final byte[] data;
 
-  public Icon(String path, byte[] data) {
-    this.path = path;
-    this.data = data;
-  }
+    public Icon(String path, byte[] data) {
+        this.path = path;
+        this.data = data;
+    }
 
-  @Override public String toString() {
-    return "Icon{path='" + path + '\'' + ", size=" + (data == null ? 0 : data.length) + '}';
-  }
+    @Override
+    public String toString() {
+        return "Icon{path='" + path + '\'' + ", size=" + (data == null ? 0 : data.length) + '}';
+    }
 
 }

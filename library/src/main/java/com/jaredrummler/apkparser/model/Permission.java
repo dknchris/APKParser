@@ -30,70 +30,70 @@ package com.jaredrummler.apkparser.model;
 
 public class Permission {
 
-  public static Builder newPermission() {
-    return new Builder();
-  }
-
-  public final String name;
-  public final String label;
-  public final String icon;
-  public final String description;
-  public final String group;
-  public final String protectionLevel;
-
-  private Permission(Builder builder) {
-    this.name = builder.name;
-    this.label = builder.label;
-    this.icon = builder.icon;
-    this.description = builder.description;
-    this.group = builder.group;
-    this.protectionLevel = builder.protectionLevel;
-  }
-
-  public static final class Builder {
-
-    private String name;
-    private String label;
-    private String icon;
-    private String description;
-    private String group;
-    private String protectionLevel;
-
-    private Builder() {
+    public static Builder newPermission() {
+        return new Builder();
     }
 
-    public Permission build() {
-      return new Permission(this);
+    public final String name;
+    public final String label;
+    public final String icon;
+    public final String description;
+    public final String group;
+    public final String protectionLevel;
+
+    private Permission(Builder builder) {
+        this.name = builder.name;
+        this.label = builder.label;
+        this.icon = builder.icon;
+        this.description = builder.description;
+        this.group = builder.group;
+        this.protectionLevel = builder.protectionLevel;
     }
 
-    public Builder name(String name) {
-      this.name = name;
-      return this;
-    }
+    public static final class Builder {
 
-    public Builder label(String label) {
-      this.label = label;
-      return this;
-    }
+        private String name;
+        private String label;
+        private String icon;
+        private String description;
+        private String group;
+        private String protectionLevel;
 
-    public Builder icon(String icon) {
-      this.icon = icon;
-      return this;
-    }
+        private Builder() {
+        }
 
-    public Builder description(String description) {
-      this.description = description;
-      return this;
-    }
+        public Permission build() {
+            return new Permission(this);
+        }
 
-    public Builder group(String group) {
-      this.group = group;
-      return this;
-    }
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
 
-    public Builder protectionLevel(String protectionLevel) {
-      this.protectionLevel = protectionLevel;
-      return this;
+        public Builder label(String label) {
+            this.label = label;
+            return this;
+        }
+
+        public Builder icon(String icon) {
+            this.icon = icon;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder group(String group) {
+            this.group = group;
+            return this;
+        }
+
+        public Builder protectionLevel(String protectionLevel) {
+            this.protectionLevel = protectionLevel;
+            return this;
+        }
     }
-  }
 }

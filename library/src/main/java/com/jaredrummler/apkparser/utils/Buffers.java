@@ -32,56 +32,56 @@ import java.nio.ByteBuffer;
 
 public class Buffers {
 
-  /**
-   * Get one unsigned byte as short type
-   */
-  public static short readUByte(ByteBuffer buffer) {
-    byte b = buffer.get();
-    return (short) (b & 0xff);
-  }
-
-  /**
-   * Get one unsigned short as int type
-   */
-  public static int readUShort(ByteBuffer buffer) {
-    short s = buffer.getShort();
-    return s & 0xffff;
-  }
-
-  /**
-   * Get one unsigned int as long type
-   */
-  public static long readUInt(ByteBuffer buffer) {
-    int i = buffer.getInt();
-    return i & 0xffffffffL;
-  }
-
-  /**
-   * Get bytes
-   */
-  public static byte[] readBytes(ByteBuffer buffer, int size) {
-    byte[] bytes = new byte[size];
-    buffer.get(bytes);
-    return bytes;
-  }
-
-  /**
-   * Read utf16 strings, use strLen, not ending 0 char.
-   *
-   * @param strLen
-   */
-  public static String readString(ByteBuffer buffer, int strLen) {
-    StringBuilder sb = new StringBuilder(strLen);
-    for (int i = 0; i < strLen; i++) {
-      sb.append(buffer.getChar());
+    /**
+     * Get one unsigned byte as short type
+     */
+    public static short readUByte(ByteBuffer buffer) {
+        byte b = buffer.get();
+        return (short) (b & 0xff);
     }
-    return sb.toString();
-  }
 
-  /**
-   * Skip count bytes
-   */
-  public static void skip(ByteBuffer buffer, int count) {
-    buffer.position(buffer.position() + count);
-  }
+    /**
+     * Get one unsigned short as int type
+     */
+    public static int readUShort(ByteBuffer buffer) {
+        short s = buffer.getShort();
+        return s & 0xffff;
+    }
+
+    /**
+     * Get one unsigned int as long type
+     */
+    public static long readUInt(ByteBuffer buffer) {
+        int i = buffer.getInt();
+        return i & 0xffffffffL;
+    }
+
+    /**
+     * Get bytes
+     */
+    public static byte[] readBytes(ByteBuffer buffer, int size) {
+        byte[] bytes = new byte[size];
+        buffer.get(bytes);
+        return bytes;
+    }
+
+    /**
+     * Read utf16 strings, use strLen, not ending 0 char.
+     *
+     * @param strLen
+     */
+    public static String readString(ByteBuffer buffer, int strLen) {
+        StringBuilder sb = new StringBuilder(strLen);
+        for (int i = 0; i < strLen; i++) {
+            sb.append(buffer.getChar());
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Skip count bytes
+     */
+    public static void skip(ByteBuffer buffer, int count) {
+        buffer.position(buffer.position() + count);
+    }
 }

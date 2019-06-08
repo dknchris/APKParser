@@ -36,80 +36,85 @@ import com.jaredrummler.apkparser.struct.xml.*;
 
 public class ApkMetaTranslator implements XmlStreamer {
 
-  private final ApkMeta.Builder builder = ApkMeta.newApkMeta();
+    private final ApkMeta.Builder builder = ApkMeta.newApkMeta();
 
-  @Override public void onStartTag(XmlNodeStartTag xmlNodeStartTag) {
-    Attributes attributes = xmlNodeStartTag.getAttributes();
-    switch (xmlNodeStartTag.getName()) {
-      case "application":
-        builder.label(attributes.get("label"));
-        builder.icon(attributes.get("icon"));
-        break;
-      case "manifest":
-        builder.packageName(attributes.get("package"));
-        builder.versionName(attributes.get("versionName"));
-        builder.versionCode(attributes.getLong("versionCode"));
-        String installLocation = attributes.get("installLocation");
-        if (installLocation != null) {
-          builder.installLocation(installLocation);
+    @Override
+    public void onStartTag(XmlNodeStartTag xmlNodeStartTag) {
+        Attributes attributes = xmlNodeStartTag.getAttributes();
+        switch (xmlNodeStartTag.getName()) {
+            case "application":
+                builder.label(attributes.get("label"));
+                builder.icon(attributes.get("icon"));
+                break;
+            case "manifest":
+                builder.packageName(attributes.get("package"));
+                builder.versionName(attributes.get("versionName"));
+                builder.versionCode(attributes.getLong("versionCode"));
+                String installLocation = attributes.get("installLocation");
+                if (installLocation != null) {
+                    builder.installLocation(installLocation);
+                }
+                break;
+            case "uses-sdk":
+                builder.minSdkVersion(attributes.get("minSdkVersion"));
+                builder.targetSdkVersion(attributes.get("targetSdkVersion"));
+                builder.maxSdkVersion(attributes.get("maxSdkVersion"));
+                break;
+            case "supports-screens":
+                builder.anyDensity(attributes.getBoolean("anyDensity", false));
+                builder.smallScreens(attributes.getBoolean("smallScreens", false));
+                builder.normalScreens(attributes.getBoolean("normalScreens", false));
+                builder.largeScreens(attributes.getBoolean("largeScreens", false));
+                break;
+            case "uses-feature":
+                String name = attributes.get("name");
+                boolean required = attributes.getBoolean("required", false);
+                if (name != null) {
+                    builder.addUseFeatures(new UseFeature(name, required));
+                } else {
+                    Integer gl = attributes.getInt("glEsVersion");
+                    if (gl != null) {
+                        builder.glEsVersion(new GlEsVersion(gl >> 16, gl & 0xffff, required));
+                    }
+                }
+                break;
+            case "uses-permission":
+                builder.addUsesPermission(attributes.get("name"));
+                break;
+            case "permission":
+                builder.addPermission(Permission.newPermission()
+                        .name(attributes.get("name"))
+                        .label(attributes.get("label"))
+                        .icon(attributes.get("icon"))
+                        .group(attributes.get("group"))
+                        .description(attributes.get("description"))
+                        .protectionLevel(attributes.get("android:protectionLevel"))
+                        .build());
+                break;
+            case "meta-data":
+                builder.addMetaData(attributes.get("name"), attributes.get("value"));
+                break;
         }
-        break;
-      case "uses-sdk":
-        builder.minSdkVersion(attributes.get("minSdkVersion"));
-        builder.targetSdkVersion(attributes.get("targetSdkVersion"));
-        builder.maxSdkVersion(attributes.get("maxSdkVersion"));
-        break;
-      case "supports-screens":
-        builder.anyDensity(attributes.getBoolean("anyDensity", false));
-        builder.smallScreens(attributes.getBoolean("smallScreens", false));
-        builder.normalScreens(attributes.getBoolean("normalScreens", false));
-        builder.largeScreens(attributes.getBoolean("largeScreens", false));
-        break;
-      case "uses-feature":
-        String name = attributes.get("name");
-        boolean required = attributes.getBoolean("required", false);
-        if (name != null) {
-          builder.addUseFeatures(new UseFeature(name, required));
-        } else {
-          Integer gl = attributes.getInt("glEsVersion");
-          if (gl != null) {
-            builder.glEsVersion(new GlEsVersion(gl >> 16, gl & 0xffff, required));
-          }
-        }
-        break;
-      case "uses-permission":
-        builder.addUsesPermission(attributes.get("name"));
-        break;
-      case "permission":
-        builder.addPermission(Permission.newPermission()
-            .name(attributes.get("name"))
-            .label(attributes.get("label"))
-            .icon(attributes.get("icon"))
-            .group(attributes.get("group"))
-            .description(attributes.get("description"))
-            .protectionLevel(attributes.get("android:protectionLevel"))
-            .build());
-        break;
-      case "meta-data":
-        builder.addMetaData(attributes.get("name"), attributes.get("value"));
-        break;
     }
-  }
 
-  @Override public void onEndTag(XmlNodeEndTag xmlNodeEndTag) {
-  }
+    @Override
+    public void onEndTag(XmlNodeEndTag xmlNodeEndTag) {
+    }
 
-  @Override public void onCData(XmlCData xmlCData) {
-  }
+    @Override
+    public void onCData(XmlCData xmlCData) {
+    }
 
-  @Override public void onNamespaceStart(XmlNamespaceStartTag tag) {
-  }
+    @Override
+    public void onNamespaceStart(XmlNamespaceStartTag tag) {
+    }
 
-  @Override public void onNamespaceEnd(XmlNamespaceEndTag tag) {
-  }
+    @Override
+    public void onNamespaceEnd(XmlNamespaceEndTag tag) {
+    }
 
-  public ApkMeta getApkMeta() {
-    return builder.build();
-  }
+    public ApkMeta getApkMeta() {
+        return builder.build();
+    }
 
 }

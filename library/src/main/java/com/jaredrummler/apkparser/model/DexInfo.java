@@ -21,12 +21,12 @@ import com.jaredrummler.apkparser.struct.dex.DexHeader;
 
 public class DexInfo {
 
-  public final DexClass[] classes;
-  public final DexHeader header;
+    public final DexClass[] classes;
+    public final DexHeader header;
 
-  public DexInfo(DexClass[] classes, DexHeader header) {
-    this.classes = classes;
-    this.header = header;
-  }
+    public DexInfo(DexClass[] classes, DexHeader header) {
+        this.classes = classes;
+        this.header = header;
+    }
 
 }

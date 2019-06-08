@@ -30,15 +30,16 @@ package com.jaredrummler.apkparser.model;
 
 public class UseFeature {
 
-  public final String name;
-  public final boolean required;
+    public final String name;
+    public final boolean required;
 
-  public UseFeature(String name, boolean required) {
-    this.name = name;
-    this.required = required;
-  }
+    public UseFeature(String name, boolean required) {
+        this.name = name;
+        this.required = required;
+    }
 
-  @Override public String toString() {
-    return this.name;
-  }
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

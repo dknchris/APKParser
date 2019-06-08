@@ -32,13 +32,13 @@ import com.jaredrummler.apkparser.struct.xml.*;
 
 public interface XmlStreamer {
 
-  void onStartTag(XmlNodeStartTag xmlNodeStartTag);
+    void onStartTag(XmlNodeStartTag xmlNodeStartTag);
 
-  void onEndTag(XmlNodeEndTag xmlNodeEndTag);
+    void onEndTag(XmlNodeEndTag xmlNodeEndTag);
 
-  void onCData(XmlCData xmlCData);
+    void onCData(XmlCData xmlCData);
 
-  void onNamespaceStart(XmlNamespaceStartTag tag);
+    void onNamespaceStart(XmlNamespaceStartTag tag);
 
-  void onNamespaceEnd(XmlNamespaceEndTag tag);
+    void onNamespaceEnd(XmlNamespaceEndTag tag);
 }

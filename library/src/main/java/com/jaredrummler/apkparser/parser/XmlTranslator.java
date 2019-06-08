@@ -35,95 +35,100 @@ import java.util.List;
 
 public class XmlTranslator implements XmlStreamer {
 
-  private StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-  private XmlNamespaces namespaces = new XmlNamespaces();
-  private boolean isLastStartTag;
-  private int shift;
+    private StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+    private XmlNamespaces namespaces = new XmlNamespaces();
+    private boolean isLastStartTag;
+    private int shift;
 
-  @Override public void onStartTag(XmlNodeStartTag xmlNodeStartTag) {
-    if (isLastStartTag) {
-      sb.append(">\n");
+    @Override
+    public void onStartTag(XmlNodeStartTag xmlNodeStartTag) {
+        if (isLastStartTag) {
+            sb.append(">\n");
+        }
+        appendShift(shift++);
+        sb.append('<');
+        if (xmlNodeStartTag.getNamespace() != null) {
+            String prefix = namespaces.getPrefixViaUri(xmlNodeStartTag.getNamespace());
+            if (prefix != null) {
+                sb.append(prefix).append(':');
+            } else {
+                sb.append(xmlNodeStartTag.getNamespace()).append(':');
+            }
+        }
+        sb.append(xmlNodeStartTag.getName());
+
+        List<XmlNamespaces.XmlNamespace> nps = namespaces.consumeNameSpaces();
+        if (!nps.isEmpty()) {
+            for (XmlNamespaces.XmlNamespace np : nps) {
+                sb.append(" xmlns:")
+                        .append(np.prefix)
+                        .append("=\"")
+                        .append(np.uri)
+                        .append("\"");
+            }
+        }
+        isLastStartTag = true;
+
+        for (Attribute attribute : xmlNodeStartTag.getAttributes().value()) {
+            onAttribute(attribute);
+        }
     }
-    appendShift(shift++);
-    sb.append('<');
-    if (xmlNodeStartTag.getNamespace() != null) {
-      String prefix = namespaces.getPrefixViaUri(xmlNodeStartTag.getNamespace());
-      if (prefix != null) {
-        sb.append(prefix).append(':');
-      } else {
-        sb.append(xmlNodeStartTag.getNamespace()).append(':');
-      }
+
+    private void onAttribute(Attribute attribute) {
+        sb.append(' ');
+        String namespace = this.namespaces.getPrefixViaUri(attribute.getNamespace());
+        if (namespace == null) {
+            namespace = attribute.getNamespace();
+        }
+        if (namespace != null && !namespace.isEmpty()) {
+            sb.append(namespace).append(':');
+        }
+        String escapedFinalValue = XmlEscaper.escapeXml10(attribute.getValue());
+        sb.append(attribute.getName()).append('=').append('"')
+                .append(escapedFinalValue).append('"');
     }
-    sb.append(xmlNodeStartTag.getName());
 
-    List<XmlNamespaces.XmlNamespace> nps = namespaces.consumeNameSpaces();
-    if (!nps.isEmpty()) {
-      for (XmlNamespaces.XmlNamespace np : nps) {
-        sb.append(" xmlns:")
-            .append(np.prefix)
-            .append("=\"")
-            .append(np.uri)
-            .append("\"");
-      }
+    @Override
+    public void onEndTag(XmlNodeEndTag xmlNodeEndTag) {
+        --shift;
+        if (isLastStartTag) {
+            sb.append(" />\n");
+        } else {
+            appendShift(shift);
+            sb.append("</");
+            if (xmlNodeEndTag.getNamespace() != null) {
+                sb.append(xmlNodeEndTag.getNamespace()).append(':');
+            }
+            sb.append(xmlNodeEndTag.getName());
+            sb.append(">\n");
+        }
+        isLastStartTag = false;
     }
-    isLastStartTag = true;
 
-    for (Attribute attribute : xmlNodeStartTag.getAttributes().value()) {
-      onAttribute(attribute);
+    @Override
+    public void onCData(XmlCData xmlCData) {
+        appendShift(shift);
+        sb.append(xmlCData.getValue()).append('\n');
+        isLastStartTag = false;
     }
-  }
 
-  private void onAttribute(Attribute attribute) {
-    sb.append(' ');
-    String namespace = this.namespaces.getPrefixViaUri(attribute.getNamespace());
-    if (namespace == null) {
-      namespace = attribute.getNamespace();
+    @Override
+    public void onNamespaceStart(XmlNamespaceStartTag tag) {
+        this.namespaces.addNamespace(tag);
     }
-    if (namespace != null && !namespace.isEmpty()) {
-      sb.append(namespace).append(':');
+
+    @Override
+    public void onNamespaceEnd(XmlNamespaceEndTag tag) {
+        this.namespaces.removeNamespace(tag);
     }
-    String escapedFinalValue = XmlEscaper.escapeXml10(attribute.getValue());
-    sb.append(attribute.getName()).append('=').append('"')
-        .append(escapedFinalValue).append('"');
-  }
 
-  @Override public void onEndTag(XmlNodeEndTag xmlNodeEndTag) {
-    --shift;
-    if (isLastStartTag) {
-      sb.append(" />\n");
-    } else {
-      appendShift(shift);
-      sb.append("</");
-      if (xmlNodeEndTag.getNamespace() != null) {
-        sb.append(xmlNodeEndTag.getNamespace()).append(':');
-      }
-      sb.append(xmlNodeEndTag.getName());
-      sb.append(">\n");
+    private void appendShift(int shift) {
+        for (int i = 0; i < shift; i++) {
+            sb.append('\t');
+        }
     }
-    isLastStartTag = false;
-  }
 
-  @Override public void onCData(XmlCData xmlCData) {
-    appendShift(shift);
-    sb.append(xmlCData.getValue()).append('\n');
-    isLastStartTag = false;
-  }
-
-  @Override public void onNamespaceStart(XmlNamespaceStartTag tag) {
-    this.namespaces.addNamespace(tag);
-  }
-
-  @Override public void onNamespaceEnd(XmlNamespaceEndTag tag) {
-    this.namespaces.removeNamespace(tag);
-  }
-
-  private void appendShift(int shift) {
-    for (int i = 0; i < shift; i++) {
-      sb.append('\t');
+    public String getXml() {
+        return sb.toString();
     }
-  }
-
-  public String getXml() {
-    return sb.toString();
-  }
 }

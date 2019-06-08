@@ -30,17 +30,18 @@ package com.jaredrummler.apkparser.model;
 
 public class GlEsVersion {
 
-  public final int major;
-  public final int minor;
-  public final boolean required;
+    public final int major;
+    public final int minor;
+    public final boolean required;
 
-  public GlEsVersion(int major, int minor, boolean required) {
-    this.major = major;
-    this.minor = minor;
-    this.required = required;
-  }
+    public GlEsVersion(int major, int minor, boolean required) {
+        this.major = major;
+        this.minor = minor;
+        this.required = required;
+    }
 
-  @Override public String toString() {
-    return this.major + "." + this.minor;
-  }
+    @Override
+    public String toString() {
+        return this.major + "." + this.minor;
+    }
 }

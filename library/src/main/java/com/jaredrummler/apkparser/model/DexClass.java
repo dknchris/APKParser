@@ -32,92 +32,93 @@ import com.jaredrummler.apkparser.struct.dex.DexClassStruct;
 
 public class DexClass {
 
-  public static Builder newDexClass() {
-    return new Builder();
-  }
-
-  public final String classType;
-  public final String superClass;
-  public final int accessFlags;
-
-  private DexClass(Builder builder) {
-    this.classType = builder.classType;
-    this.superClass = builder.superClass;
-    this.accessFlags = builder.accessFlags;
-  }
-
-  public String getPackageName() {
-    String packageName = classType;
-    if (packageName.length() > 0) {
-      if (packageName.charAt(0) == 'L') {
-        packageName = packageName.substring(1);
-      }
-    }
-    if (packageName.length() > 0) {
-      int idx = classType.lastIndexOf('/');
-      if (idx > 0) {
-        packageName = packageName.substring(0, classType.lastIndexOf('/') - 1);
-      } else if (packageName.charAt(packageName.length() - 1) == ';') {
-        packageName = packageName.substring(0, packageName.length() - 1);
-      }
-    }
-    return packageName.replace('/', '.');
-  }
-
-  public boolean isInterface() {
-    return (accessFlags & DexClassStruct.ACC_INTERFACE) != 0;
-  }
-
-  public boolean isEnum() {
-    return (accessFlags & DexClassStruct.ACC_ENUM) != 0;
-  }
-
-  public boolean isAnnotation() {
-    return (accessFlags & DexClassStruct.ACC_ANNOTATION) != 0;
-  }
-
-  public boolean isPublic() {
-    return (accessFlags & DexClassStruct.ACC_PUBLIC) != 0;
-  }
-
-  public boolean isProtected() {
-    return (accessFlags & DexClassStruct.ACC_PROTECTED) != 0;
-  }
-
-  public boolean isStatic() {
-    return (accessFlags & DexClassStruct.ACC_STATIC) != 0;
-  }
-
-  @Override public String toString() {
-    return classType;
-  }
-
-  public static final class Builder {
-
-    private String classType;
-    private String superClass;
-    private int accessFlags;
-
-    private Builder() {
+    public static Builder newDexClass() {
+        return new Builder();
     }
 
-    public DexClass build() {
-      return new DexClass(this);
+    public final String classType;
+    public final String superClass;
+    public final int accessFlags;
+
+    private DexClass(Builder builder) {
+        this.classType = builder.classType;
+        this.superClass = builder.superClass;
+        this.accessFlags = builder.accessFlags;
     }
 
-    public Builder classType(String classType) {
-      this.classType = classType;
-      return this;
+    public String getPackageName() {
+        String packageName = classType;
+        if (packageName.length() > 0) {
+            if (packageName.charAt(0) == 'L') {
+                packageName = packageName.substring(1);
+            }
+        }
+        if (packageName.length() > 0) {
+            int idx = classType.lastIndexOf('/');
+            if (idx > 0) {
+                packageName = packageName.substring(0, classType.lastIndexOf('/') - 1);
+            } else if (packageName.charAt(packageName.length() - 1) == ';') {
+                packageName = packageName.substring(0, packageName.length() - 1);
+            }
+        }
+        return packageName.replace('/', '.');
     }
 
-    public Builder superClass(String superClass) {
-      this.superClass = superClass;
-      return this;
+    public boolean isInterface() {
+        return (accessFlags & DexClassStruct.ACC_INTERFACE) != 0;
     }
 
-    public Builder accessFlags(int accessFlags) {
-      this.accessFlags = accessFlags;
-      return this;
+    public boolean isEnum() {
+        return (accessFlags & DexClassStruct.ACC_ENUM) != 0;
     }
-  }
+
+    public boolean isAnnotation() {
+        return (accessFlags & DexClassStruct.ACC_ANNOTATION) != 0;
+    }
+
+    public boolean isPublic() {
+        return (accessFlags & DexClassStruct.ACC_PUBLIC) != 0;
+    }
+
+    public boolean isProtected() {
+        return (accessFlags & DexClassStruct.ACC_PROTECTED) != 0;
+    }
+
+    public boolean isStatic() {
+        return (accessFlags & DexClassStruct.ACC_STATIC) != 0;
+    }
+
+    @Override
+    public String toString() {
+        return classType;
+    }
+
+    public static final class Builder {
+
+        private String classType;
+        private String superClass;
+        private int accessFlags;
+
+        private Builder() {
+        }
+
+        public DexClass build() {
+            return new DexClass(this);
+        }
+
+        public Builder classType(String classType) {
+            this.classType = classType;
+            return this;
+        }
+
+        public Builder superClass(String superClass) {
+            this.superClass = superClass;
+            return this;
+        }
+
+        public Builder accessFlags(int accessFlags) {
+            this.accessFlags = accessFlags;
+            return this;
+        }
+    }
 }
