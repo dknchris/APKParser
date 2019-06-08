@@ -244,6 +244,14 @@ public class ApkParser implements Closeable {
         return new Icon(apkMeta.icon, getFileData(apkMeta.icon));
     }
 
+    public InputStream getIconInputStream() throws IOException {
+        ApkMeta apkMeta = getApkMeta();
+        if (apkMeta.icon == null) {
+            return null;
+        }
+        return getFileDataAsInputStream(apkMeta.icon);
+    }
+
     private void transBinaryXml(String path, XmlStreamer xmlStreamer) throws IOException {
         ZipArchiveEntry entry = Utils.getEntry(zipFile, path);
         if (entry == null) {
@@ -343,6 +351,17 @@ public class ApkParser implements Closeable {
         }
         InputStream inputStream = zipFile.getInputStream(entry);
         return Utils.toByteArray(inputStream);
+    }
+
+    /**
+     * read file in apk into InputStream
+     */
+    public InputStream getFileDataAsInputStream(String path) throws IOException {
+        ZipArchiveEntry entry = Utils.getEntry(zipFile, path);
+        if (entry == null) {
+            return null;
+        }
+        return zipFile.getInputStream(entry);
     }
 
     /**
