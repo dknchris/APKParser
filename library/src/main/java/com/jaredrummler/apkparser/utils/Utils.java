@@ -28,6 +28,8 @@
 
 package com.jaredrummler.apkparser.utils;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,6 +58,10 @@ public class Utils {
   }
 
   public static ZipEntry getEntry(ZipFile zf, String path) {
+    return zf.getEntry(path);
+  }
+
+  public static ZipArchiveEntry getEntry(org.apache.commons.compress.archivers.zip.ZipFile zf, String path) {
     return zf.getEntry(path);
   }
 

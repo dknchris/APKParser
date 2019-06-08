@@ -28,6 +28,7 @@
 
 package com.jaredrummler.apkparser;
 
+import android.annotation.SuppressLint;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -38,16 +39,14 @@ import com.jaredrummler.apkparser.struct.AndroidConstants;
 import com.jaredrummler.apkparser.struct.dex.DexHeader;
 import com.jaredrummler.apkparser.struct.resource.ResourceTable;
 import com.jaredrummler.apkparser.utils.Utils;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 
 import javax.security.cert.CertificateException;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class ApkParser implements Closeable {
 
@@ -55,23 +54,32 @@ public class ApkParser implements Closeable {
 
     public static ApkParser create(PackageManager pm, String packageName)
             throws PackageManager.NameNotFoundException {
-        return new ApkParser(new File(pm.getApplicationInfo(packageName, 0).sourceDir));
+        return create(new File(pm.getApplicationInfo(packageName, 0).sourceDir));
     }
 
     public static ApkParser create(PackageInfo packageInfo) {
-        return new ApkParser(new File(packageInfo.applicationInfo.sourceDir));
+        return create(new File(packageInfo.applicationInfo.sourceDir));
     }
 
     public static ApkParser create(ApplicationInfo applicationInfo) {
-        return new ApkParser(new File(applicationInfo.sourceDir));
+        return create(new File(applicationInfo.sourceDir));
     }
 
     public static ApkParser create(String path) {
-        return new ApkParser(new File(path));
+        return create(new File(path));
     }
 
     public static ApkParser create(File file) {
-        return new ApkParser(file);
+        try {
+            return new ApkParser(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ApkParser create(FileInputStream fis) {
+        return new ApkParser(fis);
     }
 
     private List<DexInfo> dexInfos; // multi-dex
@@ -82,16 +90,17 @@ public class ApkParser implements Closeable {
     private ApkMeta apkMeta;
     private Set<Locale> locales;
     private CertificateMeta certificate;
+    private final FileInputStream fileInputStream;
     private final ZipFile zipFile;
-    private File apkFile;
     private Locale preferredLocale = DEFAULT_LOCALE;
 
-    private ApkParser(File file) throws InvalidApkException {
+    @SuppressLint("NewApi")
+    private ApkParser(FileInputStream fis) throws InvalidApkException {
         try {
-            apkFile = file;
-            zipFile = new ZipFile(file);
+            fileInputStream = fis;
+            zipFile = new ZipFile(fis.getChannel());
         } catch (IOException e) {
-            throw new InvalidApkException(String.format("Invalid APK: %s", file.getAbsolutePath()), e);
+            throw new InvalidApkException("Invalid APK", e);
         }
     }
 
@@ -148,10 +157,10 @@ public class ApkParser implements Closeable {
     }
 
     private void parseCertificate() throws IOException, CertificateException {
-        ZipEntry entry = null;
-        Enumeration<? extends ZipEntry> enu = zipFile.entries();
+        ZipArchiveEntry entry = null;
+        Enumeration<? extends ZipArchiveEntry> enu = zipFile.getEntries();
         while (enu.hasMoreElements()) {
-            ZipEntry ne = enu.nextElement();
+            ZipArchiveEntry ne = enu.nextElement();
             if (ne.isDirectory()) {
                 continue;
             }
@@ -196,7 +205,7 @@ public class ApkParser implements Closeable {
      * @throws IOException
      */
     public String transBinaryXml(String path) throws IOException {
-        ZipEntry entry = Utils.getEntry(zipFile, path);
+        ZipArchiveEntry entry = Utils.getEntry(zipFile, path);
         if (entry == null) {
             return null;
         }
@@ -236,7 +245,7 @@ public class ApkParser implements Closeable {
     }
 
     private void transBinaryXml(String path, XmlStreamer xmlStreamer) throws IOException {
-        ZipEntry entry = Utils.getEntry(zipFile, path);
+        ZipArchiveEntry entry = Utils.getEntry(zipFile, path);
         if (entry == null) {
             return;
         }
@@ -302,7 +311,7 @@ public class ApkParser implements Closeable {
         dexInfos.add(getDexInfo());
         for (int i = 2; i < 1_000; i++) {
             String path = String.format("classes%d.dex", i);
-            ZipEntry entry = Utils.getEntry(zipFile, path);
+            ZipArchiveEntry entry = Utils.getEntry(zipFile, path);
             if (entry == null) {
                 break;
             }
@@ -314,7 +323,7 @@ public class ApkParser implements Closeable {
     }
 
     private DexInfo parseDexFile() throws IOException {
-        ZipEntry entry = Utils.getEntry(zipFile, AndroidConstants.DEX_FILE);
+        ZipArchiveEntry entry = Utils.getEntry(zipFile, AndroidConstants.DEX_FILE);
         if (entry == null) {
             throw new ParserException(AndroidConstants.DEX_FILE + " not found");
         }
@@ -328,7 +337,7 @@ public class ApkParser implements Closeable {
      * read file in apk into bytes
      */
     public byte[] getFileData(String path) throws IOException {
-        ZipEntry entry = Utils.getEntry(zipFile, path);
+        ZipArchiveEntry entry = Utils.getEntry(zipFile, path);
         if (entry == null) {
             return null;
         }
@@ -343,7 +352,7 @@ public class ApkParser implements Closeable {
      * {@link ApkSignStatus#INCORRECT}
      * @throws IOException if reading the APK file failed.
      */
-    public int verifyApk() throws IOException {
+    /*public int verifyApk() throws IOException {
         ZipEntry entry = Utils.getEntry(zipFile, "META-INF/MANIFEST.MF");
         if (entry == null) {
             // apk is not signed;
@@ -372,10 +381,10 @@ public class ApkParser implements Closeable {
             }
         }
         return ApkSignStatus.SIGNED;
-    }
+    }*/
 
     private void parseResourceTable() throws IOException {
-        ZipEntry entry = Utils.getEntry(zipFile, AndroidConstants.RESOURCE_FILE);
+        ZipArchiveEntry entry = Utils.getEntry(zipFile, AndroidConstants.RESOURCE_FILE);
         if (entry == null) {
             // if no resource entry has been found, we assume it is not needed by this APK
             resourceTable = new ResourceTable();
